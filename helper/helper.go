@@ -1,23 +1,26 @@
 package helper
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"strings"
+	"strconv"
 )
 
-func ReadInputTxt(filepath string) ([]string, error) {
+func ReadInputTxtToIntSlice(filepath string) ([]int, error) {
+	var lines []int
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("could not open file: %s", err)
 	}
 	defer file.Close()
 
-	b, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, fmt.Errorf("could not read file: %s", err)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lineStr := scanner.Text()
+		num, _ := strconv.Atoi(lineStr)
+		lines = append(lines, num)
 	}
-	lines := strings.Split(string(b), "\n")
+
 	return lines, nil
 }
