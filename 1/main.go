@@ -21,7 +21,6 @@ func main() {
 	fmt.Println("The answer is: " + strconv.Itoa(subset1[0]*subset1[1]))
 	fmt.Println("The answer is: " + strconv.Itoa(subset2[0]*subset2[1]*subset2[2]))
 	fmt.Println("Program duration: " + time.Since(start).String())
-
 }
 
 func subsetSumPartOne(numbers []int, sum int) []int {
