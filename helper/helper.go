@@ -21,6 +21,5 @@ func ReadInputTxtToIntSlice(filepath string) ([]int, error) {
 		num, _ := strconv.Atoi(lineStr)
 		lines = append(lines, num)
 	}
-
 	return lines, nil
 }
