@@ -57,17 +57,10 @@ func parsePasswordPolicies(lines []string) []PasswordPolicy {
 }
 
 func isPasswordValidCharacterCount(policy PasswordPolicy) bool {
-	letterCount := 0
-	splitPassword := strings.Split(policy.Password, "")
-	for _, v := range splitPassword {
-		if v == policy.Letter {
-			letterCount++
-		}
-	}
-
-	if letterCount >= policy.MinimumCount && letterCount <= policy.MaxiumumCount {
+	if strings.Count(policy.Password, policy.Letter) >= policy.MinimumCount && strings.Count(policy.Password, policy.Letter) <= policy.MaxiumumCount {
 		return true
 	}
+
 	return false
 }
 
