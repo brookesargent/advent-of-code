@@ -43,16 +43,14 @@ func main() {
 
 func parsePasswordPolicies(lines []string) []PasswordPolicy {
 	var policies []PasswordPolicy
-	for _, v := range lines {
+	for _, line := range lines {
 		var policy PasswordPolicy
-		splitLine := strings.Split(v, ":")
-		policy.Password = strings.Trim(splitLine[1], " ")
-		policyRule := splitLine[0]
-		splitRule := strings.Split(policyRule, "-")
-		policy.MinimumCount, _ = strconv.Atoi(splitRule[0])
-		lastSplit := strings.Split(splitRule[1], " ")
-		policy.MaxiumumCount, _ = strconv.Atoi(lastSplit[0])
-		policy.Letter = lastSplit[1]
+		splitLine := strings.Split(line, " ")
+		minMax := strings.Split(splitLine[0], "-")
+		policy.MinimumCount, _ = strconv.Atoi(minMax[0])
+		policy.MaxiumumCount, _ = strconv.Atoi(minMax[1])
+		policy.Letter = strings.Trim(splitLine[1], ":")
+		policy.Password = splitLine[2]
 		policies = append(policies, policy)
 	}
 	return policies
