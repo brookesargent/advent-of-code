@@ -24,14 +24,20 @@ func main() {
 		log.Println(err)
 	}
 
-	var count = 0
+	var countA = 0
+	var countB = 0
 	passwordPolicies := parsePasswordPolicies(lines)
 	for _, policy := range passwordPolicies {
-		if isPasswordValid(policy) {
-			count++
+		if isPasswordValidCharacterCount(policy) {
+			countA++
+		}
+
+		if isPasswordValidPosition(policy) {
+			countB++
 		}
 	}
-	fmt.Println("Valid passwords: " + strconv.Itoa(count))
+	fmt.Println("Number of valid passwords for part 1: " + strconv.Itoa(countA))
+	fmt.Println("Number of valid passwords for part 2: " + strconv.Itoa(countB))
 	fmt.Println("Program duration: " + time.Since(start).String())
 }
 
@@ -40,7 +46,7 @@ func parsePasswordPolicies(lines []string) []PasswordPolicy {
 	for _, v := range lines {
 		var policy PasswordPolicy
 		splitLine := strings.Split(v, ":")
-		policy.Password = splitLine[1]
+		policy.Password = strings.Trim(splitLine[1], " ")
 		policyRule := splitLine[0]
 		splitRule := strings.Split(policyRule, "-")
 		policy.MinimumCount, _ = strconv.Atoi(splitRule[0])
@@ -52,7 +58,7 @@ func parsePasswordPolicies(lines []string) []PasswordPolicy {
 	return policies
 }
 
-func isPasswordValid(policy PasswordPolicy) bool {
+func isPasswordValidCharacterCount(policy PasswordPolicy) bool {
 	letterCount := 0
 	splitPassword := strings.Split(policy.Password, "")
 	for _, v := range splitPassword {
@@ -65,4 +71,18 @@ func isPasswordValid(policy PasswordPolicy) bool {
 		return true
 	}
 	return false
+}
+
+func isPasswordValidPosition(policy PasswordPolicy) bool {
+	letterCount := 0
+	splitPassword := strings.Split(policy.Password, "")
+	for i, v := range splitPassword {
+		if i+1 == policy.MinimumCount || i+1 == policy.MaxiumumCount {
+			if v == policy.Letter {
+				letterCount++
+			}
+		}
+	}
+
+	return letterCount == 1
 }
