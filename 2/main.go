@@ -65,15 +65,6 @@ func isPasswordValidCharacterCount(policy PasswordPolicy) bool {
 }
 
 func isPasswordValidPosition(policy PasswordPolicy) bool {
-	letterCount := 0
 	splitPassword := strings.Split(policy.Password, "")
-	for i, v := range splitPassword {
-		if i+1 == policy.MinimumCount || i+1 == policy.MaxiumumCount {
-			if v == policy.Letter {
-				letterCount++
-			}
-		}
-	}
-
-	return letterCount == 1
+	return (splitPassword[policy.MinimumCount-1] == policy.Letter) != (splitPassword[policy.MaxiumumCount-1] == policy.Letter)
 }
