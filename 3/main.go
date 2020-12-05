@@ -31,7 +31,7 @@ func main() {
 	treesA := calculateSlope(lines, slopeA)
 
 	// part two
-	var treesB []int
+	var treesB = 1
 	slopeB := []Slope{
 		{Right: 1, Down: 1},
 		{Right: 3, Down: 1},
@@ -41,13 +41,11 @@ func main() {
 	}
 
 	for _, slope := range slopeB {
-		treesB = append(treesB, calculateSlope(lines, slope))
+		treesB *= calculateSlope(lines, slope)
 	}
 
-	product := treesB[0] * treesB[1] * treesB[2] * treesB[3] * treesB[4]
-
 	fmt.Printf("Part 1: There are %s trees\n", strconv.Itoa(treesA))
-	fmt.Printf("Part 2: There are %s trees\n", strconv.Itoa(product))
+	fmt.Printf("Part 2: There are %s trees\n", strconv.Itoa(treesB))
 	fmt.Println("Program duration: " + time.Since(start).String())
 }
 
