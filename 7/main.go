@@ -104,9 +104,9 @@ func getIndirectBagHolders(bagRules map[string][]BagRule, confirmedHolders []str
 func formatBagRules(lines []string) map[string][]BagRule {
 	bagRules := make(map[string][]BagRule)
 	for _, line := range lines {
-		splitLine := strings.Split(line, "contain")
+		splitLine := strings.Split(line, " bags contain ")
 		var currentRules []BagRule
-		key := strings.TrimSuffix(splitLine[0], " bags ")
+		key := splitLine[0]
 		if strings.Contains(splitLine[1], "no") {
 			structuredRule := BagRule{
 				BagCount: 0,
