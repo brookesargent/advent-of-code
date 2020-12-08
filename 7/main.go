@@ -107,30 +107,28 @@ func formatBagRules(lines []string) map[string][]BagRule {
 		splitLine := strings.Split(line, " bags contain ")
 		var currentRules []BagRule
 		key := splitLine[0]
+
 		if strings.Contains(splitLine[1], "no") {
+			continue
+		}
+
+		splitRule := strings.Split(splitLine[1], ", ")
+		for _, rule := range splitRule {
+			var bagType []string
+			rulePieces := strings.Split(rule, " ")
+			count, err := strconv.Atoi(rulePieces[0])
+			if err != nil {
+				log.Println(err)
+			}
+			for i := 1; i < len(rulePieces)-1; i++ {
+				bagType = append(bagType, rulePieces[i])
+			}
+
 			structuredRule := BagRule{
-				BagCount: 0,
+				BagCount: count,
+				BagType:  strings.Join(bagType, " "),
 			}
 			currentRules = append(currentRules, structuredRule)
-		} else {
-			splitRule := strings.Split(strings.Trim(splitLine[1], " "), ",")
-			for _, rule := range splitRule {
-				var bagType []string
-				rulePieces := strings.Split(strings.Trim(rule, " "), " ")
-				count, err := strconv.Atoi(rulePieces[0])
-				if err != nil {
-					log.Println(err)
-				}
-				for i := 1; i < len(rulePieces)-1; i++ {
-					bagType = append(bagType, rulePieces[i])
-				}
-
-				structuredRule := BagRule{
-					BagCount: count,
-					BagType:  strings.Join(bagType, " "),
-				}
-				currentRules = append(currentRules, structuredRule)
-			}
 		}
 		bagRules[key] = currentRules
 	}
