@@ -36,13 +36,13 @@ func countGoldBagHolders(bagRules map[string][]BagRule) int {
 	var allHolders []string
 	directHolders := getDirectBagHolders(bagRules)
 	allHolders = append(allHolders, directHolders...)
-	indirectHolders := countIndirectBagHolders(bagRules, directHolders)
+	indirectHolders := getIndirectBagHolders(bagRules, directHolders)
 	allHolders = append(allHolders, indirectHolders...)
 	for len(indirectHolders) != 0 {
-		indirectHolders = countIndirectBagHolders(bagRules, indirectHolders)
+		indirectHolders = getIndirectBagHolders(bagRules, indirectHolders)
 		allHolders = append(allHolders, indirectHolders...)
 	}
-	allHolders = removeDuplicateValues(allHolders)
+	allHolders = helper.RemoveDuplicateValues(allHolders)
 	return len(allHolders)
 }
 
@@ -54,14 +54,12 @@ func countBagsGoldContains(bagRules map[string][]BagRule) int {
 	}}
 	for len(queue) > 0 {
 		rule := bagRules[queue[0].BagType]
-		//push types in rule to queue
 		for _, r := range rule {
 			factor := queue[0].BagCount * r.BagCount
 			count += factor
 			queue = append(queue, BagRule{factor, r.BagType})
 		}
-		//front pop from list
-		queue = shift(queue)
+		queue = pop(queue)
 	}
 	return count
 }
@@ -79,7 +77,7 @@ func getDirectBagHolders(bagRules map[string][]BagRule) []string {
 	return directHolders
 }
 
-func countIndirectBagHolders(bagRules map[string][]BagRule, confirmedHolders []string) []string {
+func getIndirectBagHolders(bagRules map[string][]BagRule, confirmedHolders []string) []string {
 	var indirectHolders []string
 
 	sort.Slice(confirmedHolders, func(i, j int) bool {
@@ -98,16 +96,14 @@ func countIndirectBagHolders(bagRules map[string][]BagRule, confirmedHolders []s
 				indirectHolders = append(indirectHolders, bag)
 			}
 		}
-
 	}
-	indirectHolders = removeDuplicateValues(indirectHolders)
+	indirectHolders = helper.RemoveDuplicateValues(indirectHolders)
 	return indirectHolders
 }
 
 func formatBagRules(lines []string) map[string][]BagRule {
 	bagRules := make(map[string][]BagRule)
 	for _, line := range lines {
-		line = strings.Trim(line, ".")
 		splitLine := strings.Split(line, "contain")
 		var currentRules []BagRule
 		key := strings.TrimSuffix(splitLine[0], " bags ")
@@ -116,50 +112,32 @@ func formatBagRules(lines []string) map[string][]BagRule {
 				BagCount: 0,
 			}
 			currentRules = append(currentRules, structuredRule)
-			bagRules[key] = currentRules
-			continue
-		}
+		} else {
+			splitRule := strings.Split(strings.Trim(splitLine[1], " "), ",")
+			for _, rule := range splitRule {
+				var bagType []string
+				rulePieces := strings.Split(strings.Trim(rule, " "), " ")
+				count, err := strconv.Atoi(rulePieces[0])
+				if err != nil {
+					log.Println(err)
+				}
+				for i := 1; i < len(rulePieces)-1; i++ {
+					bagType = append(bagType, rulePieces[i])
+				}
 
-		splitRule := strings.Split(strings.Trim(splitLine[1], " "), ",")
-		for _, rule := range splitRule {
-			var bagType []string
-			rulePieces := strings.Split(strings.Trim(rule, " "), " ")
-			count, err := strconv.Atoi(rulePieces[0])
-			if err != nil {
-				log.Println(err)
+				structuredRule := BagRule{
+					BagCount: count,
+					BagType:  strings.Join(bagType, " "),
+				}
+				currentRules = append(currentRules, structuredRule)
 			}
-			for i := 1; i < len(rulePieces)-1; i++ {
-				bagType = append(bagType, rulePieces[i])
-			}
-
-			structuredRule := BagRule{
-				BagCount: count,
-				BagType:  strings.Join(bagType, " "),
-			}
-			currentRules = append(currentRules, structuredRule)
 		}
 		bagRules[key] = currentRules
 	}
 	return bagRules
 }
 
-func removeDuplicateValues(slice []string) []string {
-	keys := make(map[string]bool)
-	list := []string{}
-
-	// If the key(values of the slice) is not equal
-	// to the already present value in new slice (list)
-	// then we append it. else we jump on another element.
-	for _, entry := range slice {
-		if _, value := keys[entry]; !value {
-			keys[entry] = true
-			list = append(list, entry)
-		}
-	}
-	return list
-}
-
-func shift(a []BagRule) []BagRule {
+func pop(a []BagRule) []BagRule {
 	_, a = a[0], a[1:]
 	return a
 }

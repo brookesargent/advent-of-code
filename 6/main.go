@@ -38,7 +38,7 @@ func totalYesesPart1(lines []string) int {
 	for _, line := range lines {
 		if line == "" {
 			// total group yeses
-			yesTally = removeDuplicateValues(yesTally)
+			yesTally = helper.RemoveDuplicateValues(yesTally)
 			totalYesCount += len(yesTally)
 			yesTally = nil
 			continue
@@ -75,22 +75,6 @@ func totalYesesPart2(lines []string) int {
 		participantCount++
 	}
 	return totalYesCount
-}
-
-func removeDuplicateValues(slice []string) []string {
-	keys := make(map[string]bool)
-	list := []string{}
-
-	// If the key(values of the slice) is not equal
-	// to the already present value in new slice (list)
-	// then we append it. else we jump on another element.
-	for _, entry := range slice {
-		if _, value := keys[entry]; !value {
-			keys[entry] = true
-			list = append(list, entry)
-		}
-	}
-	return list
 }
 
 func sortSliceByMapValues(slice map[string]int) []kv {
