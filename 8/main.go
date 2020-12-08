@@ -26,7 +26,6 @@ func main() {
 		log.Println(err)
 	}
 	moveList := formatGameMoves(lines)
-	fmt.Println(moveList)
 	accumulator, idx := 0, 0
 	for {
 		currentMove := moveList[idx]
