@@ -49,8 +49,8 @@ func main() {
 		}
 	}
 
-	fmt.Println("Accumulator value: " + strconv.Itoa(accumulator1))
-	fmt.Println("Accumulator value: " + strconv.Itoa(accumulator2))
+	fmt.Println("Part 1 accumulator value: " + strconv.Itoa(accumulator1))
+	fmt.Println("Part 2 accumulator value: " + strconv.Itoa(accumulator2))
 	fmt.Println("Program duration: " + time.Since(start).String())
 }
 
