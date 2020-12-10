@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/brookesargent/advent-of-code2020/helper"
@@ -21,8 +22,9 @@ func main() {
 	sort.Ints(numbers)
 
 	diffOne, diffThree := calcJoltDiffs(numbers)
-
-	fmt.Println(diffOne * diffThree)
+	possibleCombos := calcCombos(numbers)
+	fmt.Println("Part 1: " + strconv.Itoa(diffOne*diffThree))
+	fmt.Println("Part 2: " + strconv.Itoa(possibleCombos))
 	fmt.Println("Program duration: " + time.Since(start).String())
 }
 
@@ -40,4 +42,34 @@ func calcJoltDiffs(numbers []int) (int, int) {
 	}
 
 	return diffOne, diffThree
+}
+
+func calcCombos(numbers []int) int {
+	numMap := makeNumMap(numbers)
+	paths := make([]int, len(numbers))
+	paths[len(numbers)-1] = 1
+	for i := len(numbers) - 2; i >= 0; i-- {
+		sum := 0
+		if pos, ok := numMap[numbers[i]+1]; ok {
+			sum += paths[pos]
+		}
+
+		if pos, ok := numMap[numbers[i]+2]; ok {
+			sum += paths[pos]
+		}
+
+		if pos, ok := numMap[numbers[i]+3]; ok {
+			sum += paths[pos]
+		}
+		paths[i] = sum
+	}
+	return paths[0]
+}
+
+func makeNumMap(numbers []int) map[int]int {
+	numMap := make(map[int]int)
+	for i, v := range numbers {
+		numMap[v] = i
+	}
+	return numMap
 }
