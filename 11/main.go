@@ -3,11 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/brookesargent/advent-of-code2020/helper"
 )
+
+var startLayout [][]string
 
 func main() {
 	start := time.Now()
@@ -17,7 +20,7 @@ func main() {
 		log.Println(err)
 	}
 
-	startLayout := make([][]string, len(lines))
+	startLayout = make([][]string, len(lines))
 	currentLayout := make([][]string, len(lines))
 	for i, line := range lines {
 		seats := strings.Split(line, "")
@@ -26,83 +29,90 @@ func main() {
 		currentLayout[i] = seats2
 	}
 
+	var currentTotalOccupied int
+	prevTotalOccupied := 0
 	for {
-		prevTotalOccupied := 0
-		totalOccupied := 0
+		currentTotalOccupied = 0
 		for outer := 0; outer < len(startLayout); outer++ {
 			for inner := 0; inner < len(startLayout[outer]); inner++ {
-				adjacentOccupied := 0
-
-				if outer > 0 {
-					if checkSeat(startLayout, "up", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				if outer < len(startLayout)-1 {
-					if checkSeat(startLayout, "down", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				if inner > 0 {
-					if checkSeat(startLayout, "left", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				if inner < len(startLayout[outer])-1 {
-					if checkSeat(startLayout, "right", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				// upper left diag
-				if outer > 0 && inner > 0 {
-					if checkSeat(startLayout, "ul_diag", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				// upper right diag
-				if outer > 0 && inner < len(startLayout[outer])-1 {
-					if checkSeat(startLayout, "ur_diag", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				// lower left diag
-				if outer < len(startLayout)-1 && inner > 0 {
-					if checkSeat(startLayout, "ll_diag", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
-				// lower right diag
-				if outer < len(startLayout)-1 && inner < len(startLayout[outer])-1 {
-					if checkSeat(startLayout, "lr_diag", outer, inner) {
-						adjacentOccupied++
-					}
-				}
-
+				adjacentOccupied := calcAdjacentOccupied(outer, inner)
 				if startLayout[outer][inner] == "L" && adjacentOccupied == 0 {
 					currentLayout[outer][inner] = "#"
-					totalOccupied++
-				} else if startLayout[outer][inner] == "#" && adjacentOccupied == 4 {
+					currentTotalOccupied++
+				} else if startLayout[outer][inner] == "#" {
 					if adjacentOccupied >= 4 {
 						currentLayout[outer][inner] = "L"
+					} else {
+						currentTotalOccupied++
 					}
-					totalOccupied++
 				}
 			}
 		}
-		startLayout = currentLayout
-		if totalOccupied == prevTotalOccupied {
-			fmt.Println(totalOccupied)
+		if currentTotalOccupied == prevTotalOccupied {
 			break
 		}
+		startLayout = copyLayout(currentLayout)
+		prevTotalOccupied = currentTotalOccupied
 	}
+	fmt.Println("Total occupied seats: " + strconv.Itoa(currentTotalOccupied))
 	fmt.Println("Program duration: " + time.Since(start).String())
+}
+
+func calcAdjacentOccupied(outerIdx int, innerIdx int) int {
+	adjacentOccupied := 0
+
+	if outerIdx > 0 {
+		if checkSeat(startLayout, "up", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	if outerIdx < len(startLayout)-1 {
+		if checkSeat(startLayout, "down", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	if innerIdx > 0 {
+		if checkSeat(startLayout, "left", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	if innerIdx < len(startLayout[outerIdx])-1 {
+		if checkSeat(startLayout, "right", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	// upper left diag
+	if outerIdx > 0 && innerIdx > 0 {
+		if checkSeat(startLayout, "ul_diag", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	// upper right diag
+	if outerIdx > 0 && innerIdx < len(startLayout[outerIdx])-1 {
+		if checkSeat(startLayout, "ur_diag", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	// lower left diag
+	if outerIdx < len(startLayout)-1 && innerIdx > 0 {
+		if checkSeat(startLayout, "ll_diag", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+
+	// lower right diag
+	if outerIdx < len(startLayout)-1 && innerIdx < len(startLayout[outerIdx])-1 {
+		if checkSeat(startLayout, "lr_diag", outerIdx, innerIdx) {
+			adjacentOccupied++
+		}
+	}
+	return adjacentOccupied
 }
 
 func checkSeat(layout [][]string, direction string, outerIdx int, innerIdx int) bool {
@@ -150,4 +160,14 @@ func checkSeat(layout [][]string, direction string, outerIdx int, innerIdx int) 
 		}
 	}
 	return isOccupied
+}
+
+func copyLayout(layout [][]string) [][]string {
+	newLayout := make([][]string, len(layout))
+	for i, value := range layout {
+		newSlice := make([]string, len(value))
+		copy(newSlice, value)
+		newLayout[i] = newSlice
+	}
+	return newLayout
 }
