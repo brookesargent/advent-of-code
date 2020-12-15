@@ -12,16 +12,24 @@ func main() {
 
 	input := "14,3,1,0,9,5"
 	inputSlice := strings.Split(input, ",")
+
+	a := findNthNumberSpoken(2020, inputSlice)
+	b := findNthNumberSpoken(30000000, inputSlice)
+
+	fmt.Println("Part 1 answer: " + strconv.Itoa(a))
+	fmt.Println("Part 2 answer: " + strconv.Itoa(b))
+	fmt.Println("Program duration: " + time.Since(start).String())
+}
+
+func findNthNumberSpoken(n int, input []string) int {
 	spoken := make(map[int][]int)
 
-	for i, v := range inputSlice {
+	for i, v := range input {
 		n, _ := strconv.Atoi(v)
-		spoken[n] = append(spoken[n], i + 1)
+		spoken[n] = append(spoken[n], i+1)
 	}
-
-
 	prevSpoken := 0
-	for j := len(inputSlice)+1; j <= 2020; j++ {
+	for j := len(input) + 1; j <= n; j++ {
 		var speak int
 
 		if len(spoken[prevSpoken]) < 2 {
@@ -36,9 +44,7 @@ func main() {
 		spoken[speak] = append(spoken[speak], j)
 		prevSpoken = speak
 	}
-	
-	fmt.Println(prevSpoken)
-	fmt.Println("Program duration: " + time.Since(start).String())
+	return prevSpoken
 }
 
 func pop(a []int) []int {
