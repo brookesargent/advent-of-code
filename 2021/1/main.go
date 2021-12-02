@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/brookesargent/advent-of-code2020/helper"
+	"github.com/brookesargent/advent-of-code/helper"
 )
 
 func main() {
@@ -14,7 +14,13 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-
-	fmt.Print(lines)
+	incCount := 0
+	var prevMeasurement int
+	for i, v := range lines {
+		if i > 0 && v > prevMeasurement {
+			incCount++
+		}
+	}
+	fmt.Println(fmt.Sprintf("Answer 1 is: %d", incCount))
 	fmt.Println("Program duration: " + time.Since(start).String())
 }

@@ -1,4 +1,4 @@
-module github.com/brookesargent/advent-of-code2020
+module github.com/brookesargent/advent-of-code
 
 go 1.15
 

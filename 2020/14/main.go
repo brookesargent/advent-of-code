@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/brookesargent/advent-of-code2020/helper"
+	"github.com/brookesargent/advent-of-code/helper"
 )
 
 func main() {
