@@ -14,12 +14,14 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
+
 	incCount := 0
 	var prevMeasurement int
 	for i, v := range lines {
 		if i > 0 && v > prevMeasurement {
 			incCount++
 		}
+		prevMeasurement = v
 	}
 	fmt.Println(fmt.Sprintf("Answer 1 is: %d", incCount))
 	fmt.Println("Program duration: " + time.Since(start).String())
