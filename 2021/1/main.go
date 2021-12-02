@@ -10,13 +10,11 @@ import (
 
 func main() {
 	start := time.Now()
-
-	lines, err := helper.ReadInputTxtToStringSlice("16/input.txt")
+	lines, err := helper.ReadInputTxtToIntSlice("2021/1/input.txt")
 	if err != nil {
 		log.Println(err)
 	}
 
-	fmt.Println(lines)
-
+	fmt.Print(lines)
 	fmt.Println("Program duration: " + time.Since(start).String())
 }
