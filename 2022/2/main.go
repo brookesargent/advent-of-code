@@ -90,6 +90,7 @@ func chooseShape(opponent, outcome string) string {
 			return "Rock"
 		case "Scissors":
 			return "Paper"
+		}
 	} else if outcome == "Z" {	// need to win
 		switch opponent {
 		case "Rock":
@@ -98,6 +99,7 @@ func chooseShape(opponent, outcome string) string {
 			return "Scissors"
 		case "Scissors":
 			return "Rock"
+		}
 	}
 	return ""
 }
